@@ -76,6 +76,6 @@ class RoleController extends Controller
 
     private function formData(): array
     {
-        return ['permissions' => Permission::orderBy('name')->get(), 'options' => Option::orderBy('sort_order')->get()];
+        return ['permissions' => Permission::orderBy('name')->get(['id', 'name']), 'options' => Option::tree()];
     }
 }

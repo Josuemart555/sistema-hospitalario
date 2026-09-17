@@ -135,9 +135,9 @@ class UserController extends Controller
     private function formData(): array
     {
         return [
-            'roles' => Role::query()->orderBy('name')->get(),
-            'permissions' => Permission::query()->orderBy('name')->get(),
-            'options' => Option::query()->orderBy('sort_order')->orderBy('name')->get(),
+            'roles' => Role::query()->orderBy('name')->get(['id', 'name']),
+            'permissions' => Permission::query()->orderBy('name')->get(['id', 'name']),
+            'options' => Option::tree(),
         ];
     }
 }

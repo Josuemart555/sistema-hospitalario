@@ -97,12 +97,7 @@
                         <div class="card-body p-4">
                             <h2 class="h5 mb-3">Opciones directas del menú</h2>
                             <div class="user-access-list">
-                                @foreach($options as $option)
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="options[]" value="{{ $option->id }}" id="option{{ $option->id }}" @checked(in_array($option->id, old('options', $editing ? $user->options->pluck('id')->all() : [])))>
-                                        <label class="form-check-label" for="option{{ $option->id }}">{{ $option->name }}</label>
-                                    </div>
-                                @endforeach
+                                @include('admin.options.partials.tree-checkboxes', ['nodes' => $options, 'selected' => old('options', $editing ? $user->options->pluck('id')->all() : []), 'depth' => 0])
                             </div>
                         </div>
                     </div>
