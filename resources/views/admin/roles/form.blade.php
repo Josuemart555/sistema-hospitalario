@@ -43,9 +43,11 @@
             <div class="card-body p-4">
                 <h2 class="h5 mb-1">Opciones del menú</h2>
                 <p class="text-muted">Los permisos también deben coincidir.</p>
-                <div class="user-access-list">
-                    @include('admin.options.partials.tree-checkboxes', ['nodes' => $options, 'selected' => old('options', $editing ? $role->options->pluck('id')->all() : []), 'depth' => 0])
-                </div>
+                <div data-vue-component="OptionsTree" data-props="{{ json_encode([
+                    'nodes' => $options,
+                    'selected' => old('options', $editing ? $role->options->pluck('id')->all() : []),
+                    'name' => 'options[]',
+                ]) }}"></div>
             </div>
         </div>
 
