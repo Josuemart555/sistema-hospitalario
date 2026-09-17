@@ -7,9 +7,8 @@ use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
 use Yajra\DataTables\Html\Column;
-use Yajra\DataTables\Services\DataTable;
 
-class UsersDataTable extends DataTable
+class UsersDataTable extends AdministrationDataTable
 {
     /**
      * @param  QueryBuilder<User>  $query
@@ -48,7 +47,7 @@ class UsersDataTable extends DataTable
             ->columns($this->getColumns())
             ->minifiedAjax()
             ->orderBy(0)
-            ->parameters($this->parameters(15));
+            ->parameters($this->defaultParameters(15));
     }
 
     /**
@@ -61,34 +60,6 @@ class UsersDataTable extends DataTable
             Column::make('status')->title('Estado')->addClass('d-none d-md-table-cell'),
             Column::make('roles')->name('roles.name')->title('Roles')->orderable(false)->addClass('d-none d-lg-table-cell'),
             Column::computed('action')->title('Acciones')->exportable(false)->printable(false)->orderable(false)->searchable(false)->addClass('text-end'),
-        ];
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    private function parameters(int $pageLength): array
-    {
-        return [
-            'autoWidth' => false,
-            'pageLength' => $pageLength,
-            'language' => [
-                'emptyTable' => 'No hay datos disponibles.',
-                'info' => 'Mostrando _START_ a _END_ de _TOTAL_ registros',
-                'infoEmpty' => 'Mostrando 0 a 0 de 0 registros',
-                'infoFiltered' => '(filtrado de _MAX_ registros)',
-                'lengthMenu' => 'Mostrar _MENU_ registros',
-                'loadingRecords' => 'Cargando...',
-                'processing' => 'Procesando...',
-                'search' => 'Buscar:',
-                'zeroRecords' => 'No se encontraron resultados.',
-                'paginate' => [
-                    'first' => 'Primero',
-                    'last' => 'Último',
-                    'next' => 'Siguiente',
-                    'previous' => 'Anterior',
-                ],
-            ],
         ];
     }
 }

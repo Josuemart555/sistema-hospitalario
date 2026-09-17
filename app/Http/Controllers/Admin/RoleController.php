@@ -2,21 +2,23 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\DataTables\RolesDataTable;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreRoleRequest;
 use App\Models\Option;
 use App\Models\Role;
 use App\Services\MenuService;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
 
 class RoleController extends Controller
 {
-    public function index(): View
+    public function index(RolesDataTable $dataTable): JsonResponse|View
     {
-        return view('admin.roles.index', ['roles' => Role::withCount(['users', 'permissions'])->orderBy('name')->paginate(15)]);
+        return $dataTable->render('admin.roles.index');
     }
 
     public function create(): View
