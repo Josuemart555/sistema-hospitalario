@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\DataTables\UsersDataTable;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreUserRequest;
 use App\Http\Requests\Admin\UpdateUserRequest;
@@ -10,6 +11,7 @@ use App\Models\User;
 use App\Notifications\UserInvitationNotification;
 use App\Services\MenuService;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -23,13 +25,9 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): View
+    public function index(UsersDataTable $dataTable): JsonResponse|View
     {
-        $users = User::query()->with('roles')->when(request('search'), function ($query, $search): void {
-            $query->where(fn ($subquery) => $subquery->where('name', 'like', "%{$search}%")->orWhere('email', 'like', "%{$search}%"));
-        })->orderBy('name')->paginate(15)->withQueryString();
-
-        return view('admin.users.index', compact('users'));
+        return $dataTable->render('admin.users.index');
     }
 
     /**
