@@ -1,4 +1,5 @@
 import 'bootstrap';
+import 'laravel-datatables-vite';
 import { createApp } from 'vue';
 import PasswordStrength from './components/PasswordStrength.vue';
 

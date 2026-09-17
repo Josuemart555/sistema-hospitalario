@@ -6,6 +6,7 @@ use App\Models\Role;
 use App\Models\User;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+use Spatie\Permission\Models\Permission;
 use Tests\TestCase;
 
 class AdministrationAuthorizationTest extends TestCase
@@ -31,12 +32,14 @@ class AdministrationAuthorizationTest extends TestCase
     public function test_last_super_administrator_cannot_be_deleted(): void
     {
         $this->seed(DatabaseSeeder::class);
-        $user = User::factory()->create();
-        $user->assignRole(Role::findByName('Super Administrador'));
+        $administrator = User::factory()->create();
+        $administrator->givePermissionTo(Permission::findByName('usuarios.administrar'));
+        $superAdministrator = User::factory()->create();
+        $superAdministrator->assignRole(Role::findByName('Super Administrador'));
 
-        $response = $this->actingAs($user)->delete(route('admin.users.destroy', $user));
+        $response = $this->actingAs($administrator)->delete(route('admin.users.destroy', $superAdministrator));
 
         $response->assertSessionHasErrors('user');
-        $this->assertModelExists($user);
+        $this->assertModelExists($superAdministrator);
     }
 }

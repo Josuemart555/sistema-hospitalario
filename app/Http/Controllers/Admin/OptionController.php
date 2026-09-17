@@ -2,19 +2,21 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\DataTables\OptionsDataTable;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreOptionRequest;
 use App\Models\Option;
 use App\Services\MenuService;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Spatie\Permission\Models\Permission;
 
 class OptionController extends Controller
 {
-    public function index(): View
+    public function index(OptionsDataTable $dataTable): JsonResponse|View
     {
-        return view('admin.options.index', ['options' => Option::with(['parent', 'permission'])->orderBy('sort_order')->paginate(20)]);
+        return $dataTable->render('admin.options.index');
     }
 
     public function create(): View

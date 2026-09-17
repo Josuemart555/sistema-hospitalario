@@ -2,18 +2,20 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\DataTables\PermissionsDataTable;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StorePermissionRequest;
 use App\Services\MenuService;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Spatie\Permission\Models\Permission;
 
 class PermissionController extends Controller
 {
-    public function index(): View
+    public function index(PermissionsDataTable $dataTable): JsonResponse|View
     {
-        return view('admin.permissions.index', ['permissions' => Permission::withCount('roles')->orderBy('name')->paginate(15)]);
+        return $dataTable->render('admin.permissions.index');
     }
 
     public function create(): View

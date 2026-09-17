@@ -1,0 +1,1 @@
+<code>{{ $permission->name }}</code>
