@@ -3,6 +3,11 @@
 @section('title', $editing ? 'Editar usuario' : 'Nuevo usuario')
 @section('page-title', $editing ? 'Editar usuario' : 'Nuevo usuario')
 @section('page-description', 'Complete únicamente la información necesaria')
+@section('page-action')
+    <a class="btn btn-outline-secondary" href="{{ route('admin.users.index') }}">
+        <i class="bi bi-arrow-left"></i> Regresar
+    </a>
+@endsection
 
 @section('content')
     <form method="POST" action="{{ $editing ? route('admin.users.update', $user) : route('admin.users.store') }}" enctype="multipart/form-data">
@@ -105,7 +110,7 @@
             </div>
         </div>
 
-        <div class="d-flex flex-column flex-sm-row gap-2 mt-4">
+        <div class="d-flex flex-column flex-sm-row gap-2 mt-4 justify-content-sm-end">
             <button class="btn btn-primary" type="submit"><i class="bi bi-check-lg"></i>Guardar usuario</button>
             <a class="btn btn-outline-secondary" href="{{ route('admin.users.index') }}">Cancelar</a>
         </div>
@@ -115,14 +120,6 @@
         <form method="POST" action="{{ route('admin.users.resend-invitation', $user) }}" class="mt-3">
             @csrf
             <button class="btn btn-outline-primary" type="submit"><i class="bi bi-envelope"></i>Reenviar invitación</button>
-        </form>
-    @endif
-
-    @if($editing)
-        <form method="POST" action="{{ route('admin.users.destroy', $user) }}" class="mt-3" onsubmit="return confirm('¿Eliminar este usuario? Esta acción no se puede deshacer.')">
-            @csrf
-            @method('DELETE')
-            <button class="btn btn-outline-danger" type="submit"><i class="bi bi-trash"></i>Eliminar usuario</button>
         </form>
     @endif
 @endsection

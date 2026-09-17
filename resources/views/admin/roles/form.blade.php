@@ -3,6 +3,11 @@
 @section('title', $editing ? 'Editar rol' : 'Nuevo rol')
 @section('page-title', $editing ? 'Editar rol' : 'Nuevo rol')
 @section('page-description', 'Defina lo que podrán ver y hacer sus integrantes')
+@section('page-action')
+    <a class="btn btn-outline-secondary" href="{{ route('admin.roles.index') }}">
+        <i class="bi bi-arrow-left"></i> Regresar
+    </a>
+@endsection
 
 @section('content')
     <form method="POST" action="{{ $editing ? route('admin.roles.update', $role) : route('admin.roles.store') }}">
@@ -56,17 +61,9 @@
             </div>
         </div>
 
-        <div class="d-flex flex-column flex-sm-row gap-2 mt-4">
+        <div class="d-flex flex-column flex-sm-row gap-2 mt-4 justify-content-sm-end">
             <button class="btn btn-primary" type="submit"><i class="bi bi-check-lg"></i>Guardar rol</button>
             <a class="btn btn-outline-secondary" href="{{ route('admin.roles.index') }}">Cancelar</a>
         </div>
     </form>
-
-    @if($editing && $role->name !== 'Super Administrador')
-        <form method="POST" action="{{ route('admin.roles.destroy', $role) }}" class="mt-3" onsubmit="return confirm('¿Eliminar este rol?')">
-            @csrf
-            @method('DELETE')
-            <button class="btn btn-outline-danger" type="submit"><i class="bi bi-trash"></i>Eliminar rol</button>
-        </form>
-    @endif
 @endsection

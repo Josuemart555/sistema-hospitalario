@@ -3,6 +3,11 @@
 @section('title', $editing ? 'Editar opción' : 'Nueva opción')
 @section('page-title', $editing ? 'Editar opción' : 'Nueva opción')
 @section('page-description', 'Configure una etiqueta clara para el usuario')
+@section('page-action')
+    <a class="btn btn-outline-secondary" href="{{ route('admin.options.index') }}">
+        <i class="bi bi-arrow-left"></i> Regresar
+    </a>
+@endsection
 
 @section('content')
     <div class="card user-form-card border-0 shadow-sm">
@@ -58,19 +63,11 @@
                     </div>
                 </div>
 
-                <div class="d-flex flex-column flex-sm-row gap-2 mt-4">
+                <div class="d-flex flex-column flex-sm-row gap-2 mt-4 justify-content-sm-end">
                     <button class="btn btn-primary" type="submit"><i class="bi bi-check-lg"></i>Guardar opción</button>
                     <a class="btn btn-outline-secondary" href="{{ route('admin.options.index') }}">Cancelar</a>
                 </div>
             </form>
         </div>
     </div>
-
-    @if($editing)
-        <form class="mt-3" method="POST" action="{{ route('admin.options.destroy', $option) }}" onsubmit="return confirm('¿Eliminar esta opción?')">
-            @csrf
-            @method('DELETE')
-            <button class="btn btn-outline-danger" type="submit"><i class="bi bi-trash"></i>Eliminar opción</button>
-        </form>
-    @endif
 @endsection
