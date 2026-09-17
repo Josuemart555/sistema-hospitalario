@@ -25,33 +25,26 @@
             </div>
         </div>
 
-        <div class="row g-4 align-items-start">
-            <div class="col-12 col-xxl-6">
-                <div class="card user-form-card border-0 shadow-sm mb-0">
-                    <div class="card-body p-4">
-                        <h2 class="h5 mb-1">Permisos</h2>
-                        <p class="text-muted">Acciones que podrá realizar.</p>
-                        <div class="user-access-list">
-                            @foreach($permissions as $permission)
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="permissions[]" value="{{ $permission->id }}" id="p{{ $permission->id }}" @checked(in_array($permission->id, old('permissions', $editing ? $role->permissions->pluck('id')->all() : [])))>
-                                    <label class="form-check-label" for="p{{ $permission->id }}">{{ $permission->name }}</label>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
-                </div>
+        <div class="card user-form-card border-0 shadow-sm mb-4">
+            <div class="card-body p-4">
+                <h2 class="h5 mb-1">Permisos</h2>
+                <p class="text-muted">Acciones que podrá realizar.</p>
+                <div data-vue-component="DualListbox" data-props="{{ json_encode([
+                    'items' => $permissions,
+                    'selected' => old('permissions', $editing ? $role->permissions->pluck('id')->all() : []),
+                    'name' => 'permissions[]',
+                    'leftLabel' => 'Disponibles',
+                    'rightLabel' => 'Asignados',
+                ]) }}"></div>
             </div>
+        </div>
 
-            <div class="col-12 col-xxl-6">
-                <div class="card user-form-card border-0 shadow-sm mb-0">
-                    <div class="card-body p-4">
-                        <h2 class="h5 mb-1">Opciones del menú</h2>
-                        <p class="text-muted">Los permisos también deben coincidir.</p>
-                        <div class="user-access-list">
-                            @include('admin.options.partials.tree-checkboxes', ['nodes' => $options, 'selected' => old('options', $editing ? $role->options->pluck('id')->all() : []), 'depth' => 0])
-                        </div>
-                    </div>
+        <div class="card user-form-card border-0 shadow-sm mb-4">
+            <div class="card-body p-4">
+                <h2 class="h5 mb-1">Opciones del menú</h2>
+                <p class="text-muted">Los permisos también deben coincidir.</p>
+                <div class="user-access-list">
+                    @include('admin.options.partials.tree-checkboxes', ['nodes' => $options, 'selected' => old('options', $editing ? $role->options->pluck('id')->all() : []), 'depth' => 0])
                 </div>
             </div>
         </div>
