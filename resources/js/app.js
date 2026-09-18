@@ -1,9 +1,11 @@
 import 'bootstrap';
 import 'laravel-datatables-vite';
 import { createApp } from 'vue';
+import DualListbox from './components/DualListbox.vue';
+import OptionsTree from './components/OptionsTree.vue';
 import PasswordStrength from './components/PasswordStrength.vue';
 
-const components = { PasswordStrength };
+const components = { PasswordStrength, DualListbox, OptionsTree };
 document.querySelectorAll('[data-vue-component]').forEach((element) => {
     const component = components[element.dataset.vueComponent];
     if (component) createApp(component, JSON.parse(element.dataset.props || '{}')).mount(element);
