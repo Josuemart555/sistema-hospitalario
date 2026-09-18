@@ -11,7 +11,12 @@ body { font-size: var(--accessible-font-size); color: #263238; }
 .brand-link { min-height: 76px; display: flex; align-items: center; gap: .75rem; padding: 1rem 1.25rem; color: #fff; font-size: 1.2rem; font-weight: 700; text-decoration: none; }
 .sidebar-link { display: flex; align-items: center; gap: .8rem; min-height: 48px; margin: .25rem .75rem; padding: .7rem 1rem; border-radius: .65rem; color: #d1d5db; text-decoration: none; }
 .sidebar-link:hover, .sidebar-link:focus, .sidebar-link.active { color: #fff; background: #2563eb; }
-.sidebar-heading { margin: 1.2rem 1.25rem .4rem; color: #9ca3af; font-size: .82rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
+.sidebar-group-toggle { width: calc(100% - 1.5rem); border: 0; background: transparent; justify-content: flex-start; cursor: pointer; }
+.sidebar-caret { margin-left: auto; transition: transform .2s ease; }
+.sidebar-group-toggle[aria-expanded="true"] .sidebar-caret { transform: rotate(180deg); }
+.sidebar-submenu { display: flex; flex-direction: column; gap: .1rem; padding: .15rem 0 .35rem; }
+.sidebar-sublink { display: flex; align-items: center; gap: .7rem; min-height: 40px; margin: 0 .75rem 0 1.6rem; padding: .5rem .75rem; border-radius: .6rem; color: #9ca3af; text-decoration: none; font-size: .92rem; }
+.sidebar-sublink:hover, .sidebar-sublink:focus, .sidebar-sublink.active { color: #fff; background: #2563eb; }
 .app-header { min-height: 76px; background: #fff; border-bottom: 1px solid #e5e7eb; display: flex; align-items: center; justify-content: space-between; padding: .75rem 1.5rem; position: sticky; top: 0; z-index: 1020; }
 .page-content { padding: 1.5rem; }
 .form-label { font-weight: 650; color: #263238; }
