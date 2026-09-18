@@ -29,13 +29,13 @@ const toggle = (event) => {
 
 <template>
     <div class="options-tree-node">
-        <div class="form-check d-flex align-items-center gap-1">
-            <button v-if="hasChildren" type="button" class="btn btn-sm btn-link p-0 options-tree-toggle" @click="expanded = !expanded">
+        <div class="options-tree-row" :class="{ 'is-checked': isChecked }">
+            <button v-if="hasChildren" type="button" class="options-tree-toggle" @click="expanded = !expanded">
                 <i class="bi" :class="expanded ? 'bi-folder2-open' : 'bi-folder2'"></i>
             </button>
-            <i v-else class="bi bi-file-earmark"></i>
-            <input class="form-check-input mt-0" type="checkbox" :checked="isChecked" :indeterminate="isIndeterminate" @change="toggle">
-            <label class="form-check-label">{{ node.name }}</label>
+            <span v-else class="options-tree-toggle-spacer"><i class="bi bi-file-earmark"></i></span>
+            <input :id="`option-${node.id}`" class="form-check-input" type="checkbox" :checked="isChecked" :indeterminate="isIndeterminate" @change="toggle">
+            <label class="form-check-label" :for="`option-${node.id}`">{{ node.name }}</label>
         </div>
 
         <div v-if="hasChildren && expanded" class="options-tree-children">

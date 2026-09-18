@@ -23,14 +23,23 @@ body { font-size: var(--accessible-font-size); color: #263238; }
 .auth-help { color: #4b5563; }
 .user-form-card { padding: 0; }
 .user-form-card .card-body { min-width: 0; }
-.dual-listbox-pane { max-height: 260px; overflow-y: auto; }
-.dual-listbox-pane .list-group-item { cursor: pointer; user-select: none; }
-.dual-listbox-item-active { background: #e8f0fe; border-color: #2563eb; }
+.dual-listbox-pane { height: 280px; overflow-y: auto; border: 1px solid #dee2e6; border-radius: .5rem; background: #fff; }
+.dual-listbox-pane .list-group-item { cursor: pointer; user-select: none; border-color: #eef0f2; }
+.dual-listbox-pane .list-group-item:hover:not(.dual-listbox-item-active) { background: #f3f4f6; }
+.dual-listbox-pane .list-group-item.dual-listbox-item-active { background-color: #dbe8fe !important; border-color: #2563eb !important; color: #1d4ed8; font-weight: 650; }
+.dual-listbox-pane:empty { display: flex; align-items: center; justify-content: center; }
 .dual-listbox-controls { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .4rem; height: 100%; }
-.options-tree { font-size: .95rem; }
-.options-tree-node { margin-bottom: .35rem; }
-.options-tree-children { margin-left: 1.5rem; border-left: 1px dashed #d1d5db; padding-left: .75rem; }
-.options-tree .bi-folder2, .options-tree .bi-folder2-open, .options-tree .bi-file-earmark { color: #2563eb; }
-.options-tree-toggle { text-decoration: none; line-height: 1; }
+.options-tree { font-size: .95rem; border: 1px solid #dee2e6; border-radius: .5rem; background: #fff; padding: .75rem 1rem; max-height: 420px; overflow-y: auto; }
+.options-tree-node { margin-bottom: .1rem; }
+.options-tree-row { display: flex; align-items: center; gap: .5rem; padding: .35rem .5rem; border-radius: .4rem; }
+.options-tree-row:hover { background: #f3f4f6; }
+.options-tree-row.is-checked { background: #dbe8fe; }
+.options-tree-toggle { display: inline-flex; align-items: center; justify-content: center; width: 1.5rem; height: 1.5rem; border-radius: .3rem; text-decoration: none; color: #2563eb; flex: 0 0 auto; }
+.options-tree-toggle:hover { background: #e5e7eb; }
+.options-tree-toggle-spacer { display: inline-block; width: 1.5rem; flex: 0 0 auto; }
+.options-tree-row .bi-folder2, .options-tree-row .bi-folder2-open, .options-tree-row .bi-file-earmark { color: #2563eb; font-size: 1.05rem; flex: 0 0 auto; }
+.options-tree-row .form-check-input { margin: 0; flex: 0 0 auto; }
+.options-tree-row .form-check-label { margin: 0; flex: 1 1 auto; cursor: pointer; }
+.options-tree-children { margin-left: 1.35rem; border-left: 1px dashed #cbd5e1; padding-left: .5rem; }
 @media (max-width: 767.98px) { .dual-listbox-controls { flex-direction: row; height: auto; } }
 @media (max-width: 991.98px) { .app-sidebar { transform: translateX(-100%); transition: transform .2s ease; } .app-sidebar.show { transform: translateX(0); } .app-main { width: 100%; margin-left: 0; } .page-content { padding: 1rem; } }
