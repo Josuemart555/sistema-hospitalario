@@ -1,12 +1,17 @@
 FROM php:8.4-fpm-alpine
 
 RUN apk add --no-cache \
+    freetype-dev \
     icu-dev \
+    libjpeg-turbo-dev \
+    libpng-dev \
+    libwebp-dev \
     libzip-dev \
     oniguruma-dev \
     linux-headers \
     $PHPIZE_DEPS \
-    && docker-php-ext-install -j$(nproc) bcmath intl mbstring opcache pdo_mysql zip \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
+    && docker-php-ext-install -j$(nproc) bcmath exif gd intl mbstring opcache pdo_mysql zip \
     && apk del $PHPIZE_DEPS
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
