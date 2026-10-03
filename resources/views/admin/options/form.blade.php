@@ -1,0 +1,73 @@
+@extends('layouts.app')
+@php($editing = isset($option))
+@section('title', $editing ? 'Editar opción' : 'Nueva opción')
+@section('page-title', $editing ? 'Editar opción' : 'Nueva opción')
+@section('page-description', 'Configure una etiqueta clara para el usuario')
+@section('page-action')
+    <a class="btn btn-outline-secondary" href="{{ route('admin.options.index') }}">
+        <i class="bi bi-arrow-left"></i> Regresar
+    </a>
+@endsection
+
+@section('content')
+    <div class="card user-form-card border-0 shadow-sm">
+        <div class="card-body p-4">
+            <form method="POST" action="{{ $editing ? route('admin.options.update', $option) : route('admin.options.store') }}">
+                @csrf
+                @if($editing)
+                    @method('PUT')
+                @endif
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label" for="name">Nombre visible</label>
+                        <input class="form-control" id="name" name="name" value="{{ old('name', $option->name ?? '') }}" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="parent_id">Grupo superior</label>
+                        <select class="form-select" id="parent_id" name="parent_id">
+                            <option value="">Ninguno; es una opción principal</option>
+                            @foreach($parents as $parent)
+                                <option value="{{ $parent->id }}" @selected(old('parent_id', $option->parent_id ?? null) == $parent->id)>{{ $parent->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="route_name">Nombre de ruta</label>
+                        <input class="form-control" id="route_name" name="route_name" value="{{ old('route_name', $option->route_name ?? '') }}" placeholder="admin.users.index">
+                        <small class="text-muted">Déjelo vacío para crear un grupo.</small>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="permission_id">Permiso requerido</label>
+                        <select class="form-select" id="permission_id" name="permission_id">
+                            <option value="">Ninguno</option>
+                            @foreach($permissions as $permission)
+                                <option value="{{ $permission->id }}" @selected(old('permission_id', $option->permission_id ?? null) == $permission->id)>{{ $permission->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="icon">Icono Bootstrap</label>
+                        <input class="form-control" id="icon" name="icon" value="{{ old('icon', $option->icon ?? 'bi-circle') }}" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label" for="sort_order">Orden</label>
+                        <input class="form-control" id="sort_order" name="sort_order" type="number" min="0" value="{{ old('sort_order', $option->sort_order ?? 0) }}" required>
+                    </div>
+                    <div class="col-md-3 d-flex align-items-end pb-2">
+                        <div class="form-check form-switch">
+                            <input type="hidden" name="is_active" value="0">
+                            <input class="form-check-input" id="is_active" name="is_active" value="1" type="checkbox" @checked(old('is_active', $option->is_active ?? true))>
+                            <label class="form-check-label" for="is_active">Activa</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex flex-column flex-sm-row gap-2 mt-4 justify-content-sm-end">
+                    <button class="btn btn-primary" type="submit"><i class="bi bi-check-lg"></i>Guardar opción</button>
+                    <a class="btn btn-outline-secondary" href="{{ route('admin.options.index') }}">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+@endsection

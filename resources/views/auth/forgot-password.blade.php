@@ -1,0 +1,3 @@
+@extends('layouts.guest')
+@section('title','Recuperar contraseña') @section('subtitle','Le enviaremos un enlace seguro a su correo')
+@section('content')<form method="POST" action="{{ route('password.email') }}">@csrf<div class="login-form-group"><label class="login-form-label" for="email">Correo electrónico</label><div class="login-input-group"><i class="bi bi-envelope input-icon"></i><input class="login-input" id="email" name="email" type="email" value="{{ old('email') }}" required autofocus></div></div><button class="btn-login" type="submit"><span>Enviar enlace</span><i class="bi bi-send"></i></button><a class="d-block text-center mt-3" href="{{ route('login') }}">Volver al inicio de sesión</a></form>@endsection

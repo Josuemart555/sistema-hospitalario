@@ -1,0 +1,1 @@
+@extends('layouts.guest') @section('title','Acceso no autorizado') @section('subtitle','No tiene permiso para abrir esta sección') @section('content')<a class="btn-login" href="{{ route('dashboard') }}">Volver al inicio</a>@endsection

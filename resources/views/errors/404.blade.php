@@ -1,0 +1,1 @@
+@extends('layouts.guest') @section('title','Página no encontrada') @section('subtitle','La dirección solicitada no existe o fue movida') @section('content')<a class="btn-login" href="{{ auth()->check()?route('dashboard'):route('login') }}">Volver al inicio</a>@endsection
