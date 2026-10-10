@@ -35,27 +35,51 @@ Clone dentro de `C:\laragon\www` para que Laragon cree el dominio automáticamen
 
 ```bash
 cd C:\laragon\www
-git clone https://github.com/Josuemart555/sistema-hospitalario.git
+git clone https://github.com/compilations-teams/sistema-hospitalario-integrado-SistenasII-2026-G4.git sistema-hospitalario
 cd sistema-hospitalario
 ```
 
-Con **Auto virtual hosts** activado (Preferencias > General), el sitio quedará en `http://sistema-hospitalario.test`. Si no aparece, pulse **Reiniciar** o menú > Apache > Reload.
+El nombre final `sistema-hospitalario` (último argumento de `git clone`) es importante: con **Auto virtual hosts** activado (Preferencias > General), Laragon publica el sitio en `http://sistema-hospitalario.test`, que es el dominio que usa el `.env`. Si no aparece, pulse **Reiniciar** o menú > Apache > Reload.
 
 
-## 4. Crear la base de datos
+## 4. Crear la base de datos con HeidiSQL (incluido en Laragon)
 
-![Crear la base de datos](img/04-base-de-datos.png)
+Laragon trae **HeidiSQL**, un programa visual para administrar MySQL. Con Laragon iniciado (MySQL en verde):
 
-El MySQL de Laragon usa el usuario `root` sin contraseña.
+1. Menú de Laragon > **Base de datos** > **HeidiSQL** (o clic derecho en el ícono de Laragon > Base de datos).
+2. Se abre el **Administrador de sesiones**. Seleccione la sesión **Laragon** que ya viene creada; si no existe, pulse **Nueva** y configure: Tipo de red **MySQL (TCP/IP)**, host **127.0.0.1**, usuario **root**, contraseña **vacía**, puerto **3306**.
+3. Pulse **Abrir** para conectarse.
+
+![Sesión de HeidiSQL](img/08-heidisql-sesion.png)
+
+1. En el panel izquierdo, clic derecho sobre la sesión (Laragon / 127.0.0.1) > **Crear nuevo** > **Base de datos**.
+2. En **Nombre** escriba `sistema_hospitalario`.
+3. En **Cotejamiento (Collation)** elija `utf8mb4_unicode_ci`.
+4. Pulse **Aceptar**. La base aparecerá en el listado de la izquierda (vacía, las tablas las crea `php artisan migrate`).
+
+![Crear la base de datos](img/09-heidisql-crear-bd.png)
+
+Alternativa sin interfaz, desde la Terminal de Laragon:
 
 ```bash
 mysql -u root -e "CREATE DATABASE sistema_hospitalario CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
 ```
 
-También puede crearla con el menú Laragon > Base de datos > HeidiSQL (botón derecho > Crear nueva > Base de datos).
+
+## 5. Crear la cuenta de Resend y obtener la API key
+
+El sistema envía correos (código de verificación en dos pasos y recuperación de contraseña) con **Resend**. Necesita una cuenta gratuita y una API key:
+
+1. Entre a https://resend.com y pulse **Sign up** (puede registrarse con correo o GitHub). Confirme su correo.
+2. Dentro del panel, vaya a **API Keys** > **Create API Key**.
+3. Escriba un nombre (por ejemplo `sistema-hospitalario-local`), elija el permiso **Sending access** y pulse **Add**.
+4. Copie la clave que empieza con `re_`. **Solo se muestra una vez**; guárdela en un lugar seguro.
+5. Péguela en el archivo `.env` (paso 6) en la línea `RESEND_API_KEY=`.
+
+> Con el remitente de pruebas onboarding@resend.dev, Resend solo entrega correos al correo con el que se registró en su cuenta. Para enviar a cualquier usuario, verifique un dominio propio en Resend > Domains y use un remitente de ese dominio en MAIL_FROM_ADDRESS. Nunca suba la API key a Git ni la comparta: el archivo .env está ignorado por Git.
 
 
-## 5. Instalar dependencias y configurar
+## 6. Instalar dependencias y configurar
 
 ![Comandos en orden](img/05-comandos.png)
 
@@ -67,7 +91,7 @@ copy .env.example .env
 php artisan key:generate
 ```
 
-Ahora edite el archivo `.env` (siguiente imagen). Por defecto viene configurado para SQLite; hay que cambiarlo a MySQL.
+Ahora edite el archivo `.env` (siguiente imagen). Por defecto viene configurado para SQLite: cambie a MySQL y agregue la API key de Resend del paso 5.
 
 ![Ajustes del archivo .env](img/06-env.png)
 
@@ -83,13 +107,15 @@ DB_DATABASE=sistema_hospitalario
 DB_USERNAME=root
 DB_PASSWORD=
 
-MAIL_MAILER=log
+MAIL_MAILER=resend
+MAIL_FROM_ADDRESS="onboarding@resend.dev"
+RESEND_API_KEY=re_su_clave_aqui
 ```
 
-> Con MAIL_MAILER=log los correos no se envían: se guardan en storage\logs\laravel.log. Para enviarlos de verdad con Resend, agregue RESEND_API_KEY=su_clave y cambie MAIL_MAILER=resend. Nunca suba el archivo .env a Git.
+> Pegue su API key real de Resend en RESEND_API_KEY. Sin ella el inicio de sesión con código por correo y la recuperación de contraseña fallarán. Solo para pruebas sin cuenta de Resend puede usar MAIL_MAILER=log: los correos no se envían y se guardan en storage\logs\laravel.log. Después de editar el .env ejecute php artisan config:clear.
 
 
-## 6. Migraciones, seeders y primer usuario
+## 7. Migraciones, seeders y primer usuario
 
 Estos comandos crean las tablas, los permisos/roles/menú iniciales y el usuario administrador:
 
@@ -108,7 +134,7 @@ php artisan app:bootstrap-administrator admin@hospital.test
 > Si necesita repetir todo desde cero: php artisan migrate:fresh --seed y vuelva a ejecutar app:bootstrap-administrator. Esto borra todos los datos.
 
 
-## 7. Compilar el frontend
+## 8. Compilar el frontend
 
 ```bash
 npm install
@@ -119,7 +145,7 @@ npm run build
 - Para desarrollar con recarga en vivo use `npm run dev` y deje esa terminal abierta. Si después vuelve a `npm run build` y las páginas siguen cargando desde el servidor de desarrollo, elimine el archivo `public\hot`.
 
 
-## 8. Iniciar sesión
+## 9. Iniciar sesión
 
 ![Pantalla de inicio de sesión](img/07-login.png)
 
@@ -131,10 +157,10 @@ npm run build
 
 ### Verificación en dos pasos por correo
 
-Si en un usuario activa **Exigir código de verificación por correo al iniciar sesión**, después de la contraseña se pedirá un código de 6 dígitos. Con `MAIL_MAILER=log` el código se encuentra dentro de `storage\logs\laravel.log` (busque "Su código de verificación"). Con Resend, llega al correo del usuario; el remitente `onboarding@resend.dev` solo entrega al dueño de la cuenta de Resend hasta que se verifique un dominio propio.
+Si en un usuario activa **Exigir código de verificación por correo al iniciar sesión**, después de la contraseña se pedirá un código de 6 dígitos. El código llega por correo mediante Resend (si usa `MAIL_MAILER=log` aparece dentro de `storage\logs\laravel.log`, buscando "Su código de verificación"). Con el remitente `onboarding@resend.dev` solo recibe el correo de la cuenta dueña de Resend hasta que se verifique un dominio propio.
 
 
-## 9. Ejecutar las pruebas (opcional)
+## 10. Ejecutar las pruebas (opcional)
 
 ```bash
 php artisan test
@@ -143,12 +169,12 @@ php artisan test
 Las pruebas usan SQLite en memoria (requiere la extensión `pdo_sqlite`) y no tocan su base MySQL.
 
 
-## 10. Problemas frecuentes
+## 11. Problemas frecuentes
 
 - **`could not find driver`**: active `pdo_mysql` (o `pdo_sqlite`) en menú Laragon > PHP > Extensiones y reinicie.
 - **`Your PHP version does not satisfy the requirement`** o dependencias que exigen PHP 8.3: cambie la versión en menú Laragon > PHP > Versión y abra una terminal nueva.
 - **`Vite manifest not found`** o la página sale sin estilos: ejecute `npm run build` (o `npm run dev`).
-- **`SQLSTATE[HY000] [1049] Unknown database`**: falta crear la base (paso 4) o el nombre en `.env` no coincide.
+- **`SQLSTATE[HY000] [1049] Unknown database`**: falta crear la base (paso 4, HeidiSQL) o el nombre en `.env` no coincide.
 - **`No application encryption key`**: ejecute `php artisan key:generate`.
 - **Cambió el `.env` y no se aplica**: ejecute `php artisan config:clear`.
 - **El dominio `.test` no abre**: verifique Auto virtual hosts, reinicie Laragon y compruebe que Apache/Nginx esté en el puerto 80 (si otro programa lo usa, cambie el puerto en Preferencias).
@@ -160,13 +186,13 @@ Las pruebas usan SQLite en memoria (requiere la extensión `pdo_sqlite`) y no to
 
 ```bash
 cd C:\laragon\www
-git clone https://github.com/Josuemart555/sistema-hospitalario.git
+git clone https://github.com/compilations-teams/sistema-hospitalario-integrado-SistenasII-2026-G4.git sistema-hospitalario
 cd sistema-hospitalario
 mysql -u root -e "CREATE DATABASE sistema_hospitalario CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
 composer install
 copy .env.example .env
 php artisan key:generate
-:: edite .env (MySQL, APP_URL, APP_LOCALE)
+:: edite .env (MySQL, APP_URL, APP_LOCALE y RESEND_API_KEY)
 php artisan storage:link
 php artisan migrate
 php artisan db:seed
