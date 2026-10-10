@@ -4,12 +4,19 @@ use App\Http\Controllers\Admin\OptionController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Auth\LoginCodeController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return auth()->check() ? redirect()->route('dashboard') : redirect()->route('login');
+});
+
+Route::middleware('guest')->prefix('verificacion')->name('login.code')->group(function (): void {
+    Route::get('/', [LoginCodeController::class, 'create']);
+    Route::post('/', [LoginCodeController::class, 'store'])->middleware('throttle:two-factor')->name('.store');
+    Route::post('reenviar', [LoginCodeController::class, 'resend'])->name('.resend');
 });
 
 Route::middleware(['auth', 'verified'])->group(function (): void {

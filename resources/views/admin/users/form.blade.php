@@ -68,7 +68,7 @@
                         <div class="form-check form-switch">
                             <input type="hidden" name="two_factor_allowed" value="0">
                             <input class="form-check-input" id="two_factor_allowed" name="two_factor_allowed" type="checkbox" value="1" @checked(old('two_factor_allowed', $user->two_factor_allowed ?? false))>
-                            <label class="form-check-label" for="two_factor_allowed">Permitir que este usuario active 2FA</label>
+                            <label class="form-check-label" for="two_factor_allowed">Exigir código de verificación por correo al iniciar sesión</label>
                         </div>
                     </div>
                 </div>
