@@ -10,6 +10,7 @@
         "laravel/fortify": "^1.39",
         "laravel/framework": "^13.17",
         "laravel/tinker": "^3.0",
+        "resend/resend-laravel": "^1.6",
         "spatie/laravel-medialibrary": "~11.0",
         "spatie/laravel-permission": "~8.0",
         "yajra/laravel-datatables": "^13.0"
