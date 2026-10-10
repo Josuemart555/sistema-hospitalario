@@ -19,7 +19,6 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
     Route::delete('/perfil/avatar', [ProfileController::class, 'destroyAvatar'])->middleware('can:perfil.administrar')->name('profile.avatar.destroy');
 
     Route::prefix('administracion')->name('admin.')->group(function (): void {
-        Route::post('usuarios/{user}/reenviar-invitacion', [UserController::class, 'resendInvitation'])->middleware('can:usuarios.administrar')->name('users.resend-invitation');
         Route::resource('usuarios', UserController::class)->parameters(['usuarios' => 'user'])->middleware('can:usuarios.administrar')->names('users');
         Route::resource('roles', RoleController::class)->middleware('can:roles.administrar')->names('roles');
         Route::resource('permisos', PermissionController::class)->parameters(['permisos' => 'permission'])->middleware('can:permisos.administrar')->names('permissions');

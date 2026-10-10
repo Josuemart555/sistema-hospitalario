@@ -4,6 +4,7 @@ namespace App\Http\Requests\Admin;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Password;
 
 class StoreUserRequest extends FormRequest
 {
@@ -25,7 +26,8 @@ class StoreUserRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:120'],
             'email' => ['required', 'email:rfc', 'max:255', 'unique:users,email'],
-            'status' => ['required', 'in:invited,active,suspended'],
+            'password' => ['required', 'string', Password::default(), 'confirmed'],
+            'status' => ['required', 'in:active,suspended'],
             'two_factor_allowed' => ['sometimes', 'boolean'],
             'roles' => ['array'], 'roles.*' => ['integer', 'exists:roles,id'],
             'permissions' => ['array'], 'permissions.*' => ['integer', 'exists:permissions,id'],

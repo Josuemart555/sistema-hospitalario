@@ -8,15 +8,12 @@ use App\Http\Requests\Admin\StoreUserRequest;
 use App\Http\Requests\Admin\UpdateUserRequest;
 use App\Models\Option;
 use App\Models\User;
-use App\Notifications\UserInvitationNotification;
 use App\Services\MenuService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Password;
-use Illuminate\Support\Str;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -43,26 +40,23 @@ class UserController extends Controller
      */
     public function store(StoreUserRequest $request, MenuService $menu): RedirectResponse
     {
-        $user = DB::transaction(function () use ($request): User {
-            $user = User::create([
-                ...$request->safe()->only(['name', 'email']),
-                'password' => Hash::make(Str::password(32)),
-                'status' => 'invited',
+        DB::transaction(function () use ($request): void {
+            $user = User::forceCreate([
+                ...$request->safe()->only(['name', 'email', 'status']),
+                'password' => Hash::make($request->input('password')),
+                'email_verified_at' => now(),
                 'two_factor_allowed' => $request->boolean('two_factor_allowed'),
             ]);
-            $user->syncRoles($request->input('roles', []));
-            $user->syncPermissions($request->input('permissions', []));
+            $user->syncRoles(array_map('intval', $request->input('roles', [])));
+            $user->syncPermissions(array_map('intval', $request->input('permissions', [])));
             $user->options()->sync($request->input('options', []));
             if ($request->hasFile('avatar')) {
                 $user->addMediaFromRequest('avatar')->toMediaCollection('avatar');
             }
-
-            return $user;
         });
-        $user->notify(new UserInvitationNotification(Password::broker()->createToken($user)));
         $menu->flush();
 
-        return redirect()->route('admin.users.index')->with('success', 'Usuario creado. La invitación fue enviada por correo.');
+        return redirect()->route('admin.users.index')->with('success', 'Usuario creado correctamente.');
     }
 
     /**
@@ -93,13 +87,9 @@ class UserController extends Controller
         }
 
         DB::transaction(function () use ($request, $user): void {
-            $allowed = $request->boolean('two_factor_allowed');
-            $user->update([...$request->safe()->only(['name', 'email', 'status']), 'two_factor_allowed' => $allowed]);
-            if (! $allowed) {
-                $user->forceFill(['two_factor_secret' => null, 'two_factor_recovery_codes' => null, 'two_factor_confirmed_at' => null])->save();
-            }
-            $user->syncRoles($request->input('roles', []));
-            $user->syncPermissions($request->input('permissions', []));
+            $user->update([...$request->safe()->only(['name', 'email', 'status']), 'two_factor_allowed' => $request->boolean('two_factor_allowed')]);
+            $user->syncRoles(array_map('intval', $request->input('roles', [])));
+            $user->syncPermissions(array_map('intval', $request->input('permissions', [])));
             $user->options()->sync($request->input('options', []));
             if ($request->hasFile('avatar')) {
                 $user->addMediaFromRequest('avatar')->toMediaCollection('avatar');
@@ -122,14 +112,6 @@ class UserController extends Controller
         $menu->flush();
 
         return redirect()->route('admin.users.index')->with('success', 'Usuario eliminado.');
-    }
-
-    public function resendInvitation(User $user): RedirectResponse
-    {
-        abort_unless($user->status === 'invited', 422);
-        $user->notify(new UserInvitationNotification(Password::broker()->createToken($user)));
-
-        return back()->with('success', 'Invitación reenviada.');
     }
 
     private function formData(): array

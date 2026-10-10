@@ -41,11 +41,20 @@
                             </select>
                         </div>
                     @else
-                        <input type="hidden" name="status" value="invited">
+                        <input type="hidden" name="status" value="active">
+                        <div class="col-md-6">
+                            <label class="form-label" for="password">Contraseña</label>
+                            <input class="form-control" id="password" name="password" type="password" autocomplete="new-password" required>
+                            <div data-vue-component="PasswordStrength" data-props='@json(["inputId" => "password"])'></div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="password_confirmation">Confirmar contraseña</label>
+                            <input class="form-control" id="password_confirmation" name="password_confirmation" type="password" autocomplete="new-password" required>
+                        </div>
                         <div class="col-12">
                             <div class="alert alert-info d-flex gap-2 align-items-start mb-0">
-                                <i class="bi bi-envelope"></i>
-                                <span>El usuario recibirá un enlace para crear su contraseña.</span>
+                                <i class="bi bi-info-circle"></i>
+                                <span>La cuenta se crea activa y no se envía ningún correo. Entregue la contraseña al usuario por un medio seguro.</span>
                             </div>
                         </div>
                     @endif
@@ -109,10 +118,4 @@
         </div>
     </form>
 
-    @if($editing && $user->status === 'invited')
-        <form method="POST" action="{{ route('admin.users.resend-invitation', $user) }}" class="mt-3">
-            @csrf
-            <button class="btn btn-outline-primary" type="submit"><i class="bi bi-envelope"></i>Reenviar invitación</button>
-        </form>
-    @endif
 @endsection

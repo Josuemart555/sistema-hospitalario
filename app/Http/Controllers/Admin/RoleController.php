@@ -30,7 +30,7 @@ class RoleController extends Controller
     {
         DB::transaction(function () use ($request): void {
             $role = Role::create(['name' => $request->string('name'), 'guard_name' => 'web']);
-            $role->syncPermissions($request->input('permissions', []));
+            $role->syncPermissions(array_map('intval', $request->input('permissions', [])));
             $role->options()->sync($request->input('options', []));
         });
         $menu->flush();
@@ -55,7 +55,7 @@ class RoleController extends Controller
         abort_if($role->name === 'Super Administrador' && $request->string('name')->toString() !== 'Super Administrador', 422, 'El rol protegido no puede renombrarse.');
         DB::transaction(function () use ($request, $role): void {
             $role->update(['name' => $request->string('name')]);
-            $role->syncPermissions($request->input('permissions', []));
+            $role->syncPermissions(array_map('intval', $request->input('permissions', [])));
             $role->options()->sync($request->input('options', []));
         });
         $menu->flush();
